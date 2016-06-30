@@ -19,31 +19,72 @@
   </div>
 <script>
      var map;
+
+     //Create a blank array for all the listings
+     var markers = [];
+
+
      function initMap() {
        map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.440625, lng: -79.995886},
         zoom: 14
        });
 
-       //Testing a location
-       var prestogeorge = {lat: 40.450371, lng: -79.985591};
+       //Locations
+       var locations = [
+        {title: 'Prestogeorge Coffee & Tea', location: {lat: 40.450371, lng: -79.985591}},
+        {title: 'Gooskis', location: {lat: 40.4568383, lng: -79.96867}},
+        {title: 'Yinzers', location: {lat: 40.4522837, lng: -79.9846225}},
+        {title: 'Howlers', location: {lat: 40.4631126, lng: -79.9534959}},
+        {title: 'Mon Incline', location: {lat: 40.4318982,lng: -80.0075944}}
+        ];
        
-       //Add marker
-       var marker = new google.maps.Marker({
-        position: prestogeorge,
-        map: map,
-        title: 'Tasty coffee!'
-       });
+      var largeInfowindow = new google.maps.InfoWindow();
+      var bounds = new google.maps.LatLngBounds();
 
-       //Add infowindow
-       var infowindow = new google.maps.InfoWindow({
-          content: 'here is some content. Wee.'
-       });
+      //Loop through the locations array
 
-       //Open the infowindow when the marker is clicked
-       marker.addListener('click', function(){
-        infowindow.open(map, marker);
-       })
+      for (var i = 0; i<locations.length; i++){
+        //get the lat/lng for each item
+        var position = locations[i].location;
+        var title = locations[i].title;
+        //place a marker on each location
+        var marker = new google.maps.Marker({
+          map: map,
+          position: position,
+          title: title,
+          animation: google.maps.Animation.DROP,
+          id: i
+        });
+
+        //Push the marker to our array of markers.
+        markers.push(marker);
+
+        //Adjust the boundaries of the map to fit markers
+        bounds.extend(marker.position);
+
+        //Create an onclick event to open the infowindow.
+        marker.addListener('click', function() {
+          populateInfoWindow(this, largeInfowindow);
+        });
+      }
+
+      map.fitBounds(bounds);
+
+      //Populates the info window when Marker is clicked.
+      function populateInfoWindow(marker, infowindow) {
+        //Check to see if there's info in there already
+        if (infowindow.marker != marker){
+          infowindow.marker = marker;
+          infowindow.setContent('<div>' + marker.title + '</div>');
+          infowindow.open(map, marker);
+          //Clear the info window when it is closed
+
+          infowindow.addListener('closeclick', function(){
+            infowindow.setMarker(null);
+          });
+        }
+      }
 
      }
    </script>
