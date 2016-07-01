@@ -99,6 +99,7 @@
         var marker = new google.maps.Marker({
           position: position,
           title: title,
+          icon: defaultIcon,
           animation: google.maps.Animation.DROP,
           id: i
         });
@@ -110,6 +111,14 @@
         marker.addListener('click', function() {
           populateInfoWindow(this, largeInfowindow);
         });
+
+        //Two event listeners - one for mouseover, one for mouseout- changes colors of icon.
+        marker.addListener('mouseover', function(){
+          this.setIcon(highlightedIcon);
+        });
+        marker.addListener('mouseout', function(){
+          this.setIcon(defaultIcon);
+        })
       }
 
       document.getElementById('show-listings').addEventListener('click', showListings);
