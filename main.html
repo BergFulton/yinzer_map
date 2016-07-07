@@ -11,6 +11,9 @@
         <div>
           <input id="show-listings" type="button" value="Show it">
           <input id="hide-listings" type="button" value="Get aht">
+          <hr>
+          <span class="text">Draw a shape to search for cool stuff!</span>
+          <input id="toggle-drawing" type="button" value="Draw it">
 
         </div>
     </div>
@@ -79,6 +82,17 @@
        
       
       var largeInfowindow = new google.maps.InfoWindow();
+
+      //Initialize the drawing manager
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_LEFT,
+          drawingModes: [
+          google.maps.drawing.OverlayType.POLYGON]
+        }
+      })
       
       //Set default marker icon
       var defaultIcon = makeMarkerIcon('0091ff');
@@ -201,7 +215,7 @@
    
 
    <script async defer
-      src="https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyDbhQUVvTyLIEJ-qGSCXpnA3fV1_HDJ-yo&v=3&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=AIzaSyDbhQUVvTyLIEJ-qGSCXpnA3fV1_HDJ-yo&v=3&callback=initMap">
    </script>
  </body>
 </html>
