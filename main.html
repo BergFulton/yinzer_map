@@ -71,10 +71,10 @@
        //Locations
        var locations = [
         {title: 'Prestogeorge Coffee & Tea', location: {lat: 40.450371, lng: -79.985591}},
-        {title: 'Gooskis', location: {lat: 40.4568383, lng: -79.96867}},
-        {title: 'Yinzers', location: {lat: 40.4522837, lng: -79.9846225}},
-        {title: 'Howlers', location: {lat: 40.4631126, lng: -79.9534959}},
-        {title: 'Mon Incline', location: {lat: 40.4318982,lng: -80.0075944}}
+        {title: 'Gooskis', location: {lat: 40.456838, lng: -79.966493}},
+        {title: 'Max\'s Allegheny Tavern', location: {lat: 40.455357, lng: -79.999509}},
+        {title: 'Carnegie Museum of Art', location: {lat: 40.444238,lng: -79.949428}},
+        {title: 'Andy Warhol Museum', location: {lat: 40.448554,lng: -80.002287}}
         ];
        
       
@@ -140,7 +140,7 @@
 
           var streetViewService = new google.maps.StreetViewService();
           //Look for a streetview image within 50m
-          var radius = 50;
+          var radius = 10;
 
           //Checking to see if the position has a findable image to display, setting the heading, and getting the pic.
           function getStreetView(data, status) {
