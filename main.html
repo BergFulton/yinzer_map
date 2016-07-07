@@ -26,6 +26,9 @@
      //Create a blank array for all the listings
      var markers = [];
 
+     //A global polygon variable, so that only 1 polygon is rendered at a time. Don't go crazy.
+     var polygon = null;
+
 
      function initMap() {
       //My map styles, let me show you them
@@ -140,6 +143,26 @@
       document.getElementById('toggle-drawing').addEventListener('click', function(){
           toggleDrawing(drawingManager);
       });
+      //Add event listener so that the polygon is captured, call the searchWithinPolygon function. This will show markers in the polygon, and hide any that fall outside of it. 
+
+      drawingManager.addListener('overlaycomplete', function(event){
+        //Check for an existing polygon.
+        //If there is one, get rid of it and remove markers
+        if (polygon){
+          polygon.setMap(null);
+          hideListings();
+        }
+        //Switch the drawing mode to the hand
+        drawingManager.setDrawingMode(null);
+        //Create a new editable polygon from the overlay
+        polygon = event.overlay;
+        polygon.setEditable(true);
+        //Search within the polygon
+        searchWithinPolygon();
+        //Make sure the search is re-done of the polygon changes
+        polygon.getPath().addListener('set_at', searchWithinPolygon);
+        polygon.getPath().addListener('insert_at', searchWithinPolygon);
+      })
     }
 
       //Populates the info window when Marker is clicked.
@@ -218,10 +241,26 @@
     function toggleDrawing(drawingManager){
       if (drawingManager.map){
         drawingManager.setMap(null);
+        //In case the user drew anything, get rid of the polygon
+        if (polygon){
+          polygon.setMap(null);
+        }
       } else {
         drawingManager.setMap(map);
       }
     }
+
+    //Hide all markers outside of the polygon when a polygon is drawn. 
+    function searchWithinPolygon(){
+      for (var i = 0; i < markers.length; i++){
+        if (google.maps.geometry.poly.containsLocation(markers[i].position, polygon)){
+          markers[i].setMap(map);
+        } else {
+          markers[i].setMap(null);
+        }
+      }
+    }
+
 
   
    </script>
