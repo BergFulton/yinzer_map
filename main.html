@@ -147,6 +147,10 @@
       document.getElementById('toggle-drawing').addEventListener('click', function(){
           toggleDrawing(drawingManager);
       });
+      document.getElementById('zoom-to-area').addEventListener('click', function(){
+        zoomToArea();
+      });
+
       //Add event listener so that the polygon is captured, call the searchWithinPolygon function. This will show markers in the polygon, and hide any that fall outside of it. 
 
       drawingManager.addListener('overlaycomplete', function(event){
@@ -262,6 +266,34 @@
         } else {
           markers[i].setMap(null);
         }
+      }
+    }
+
+    //Take the input value from the "find nearby", locate it, and //zoom in. This allows the user to isolate an area on the map to //focus on. 
+    function zoomToArea(){
+      //Initialize the geocoder.
+      var geocoder = new google.maps.Geocoder();
+      //Get the address/place from the user input
+      var address = document.getElementById('zoom-to-area-text').value;
+      //Check to make sure it isn't blank
+      if (address == ''){
+        window.alert('Sorry, yinz gotta give me an address.');
+      } else {
+        //Geocode the address/area entered & find the center. Then 
+        //center & zoom on it.
+        geocoder.geocode({
+          address: address,
+          componentRestrictions: {
+            locality: 'Pittsburgh'
+          }
+        }, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(15);
+              } else {
+                window.alert('Hey, we couldn\'t find that place.');
+              }
+        });
       }
     }
 
