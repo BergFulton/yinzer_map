@@ -159,6 +159,7 @@
         })
       }
 
+      //Event listeners for user interactions. 
       document.getElementById('show-listings').addEventListener('click', showListings);
       document.getElementById('hide-listings').addEventListener('click', hideListings);
       document.getElementById('toggle-drawing').addEventListener('click', function(){
@@ -166,6 +167,9 @@
       });
       document.getElementById('zoom-to-area').addEventListener('click', function(){
         zoomToArea();
+      });
+      document.getElementById('search-within-time').addEventListener('click', function(){
+        searchWithinTime();
       });
 
       //Add event listener so that the polygon is captured, call the searchWithinPolygon function. This will show markers in the polygon, and hide any that fall outside of it. 
@@ -314,6 +318,26 @@
       }
     }
 
+
+    //This function allows the user to input a desired travel time and travel mode, and a location. It will only show places that are reachable within the desired travel duration period. 
+    function searchWithinTime() {
+      //Initialize the distance matrix service
+      var distanceMatrixServce = new google.maps.DistanceMatrixService;
+      var address = document.getElementById('search-within-time-text').value;
+      //Check to see that the field isn't blank
+      if (address == ''){
+        window.alert('Yinz gotta give me an address.');
+      } else {
+        hideListings();
+        //Use the distance matrix service to calcuate the duration of the routes between all markers, and the destiation set by the user. The put all the origins into an origin matrix.
+        var origins = [];
+        for (var i =0; i < markers.length; i++){
+          origins[i] = markers[i].position;
+        }
+        var destination = address;
+        var mode = document.getElementById('mode').value;
+      }
+    }
 
   
    </script>
