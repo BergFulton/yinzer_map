@@ -95,6 +95,15 @@
         mapTypeControl: false
        });
 
+       //This is the autocomplete for use in the search within time field
+       var timeAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('search-within-time-text'));
+       //This autocomplete is used in the geocoder entry box
+       var zoomAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('zoom-to-area-text'));
+       //Bias boundaries within the map for the zoom to area text
+       zoomAutocomplete.bindTo('bounds', map);
+
        //Locations
        var locations = [
         {title: 'Prestogeorge Coffee & Tea', location: {lat: 40.450371, lng: -79.985591}},
