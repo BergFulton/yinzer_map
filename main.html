@@ -222,6 +222,14 @@
                 searchWithinTime();
             });
 
+            //Listen for the event fired when the user selects a prediction from the picklist and retrieve more data
+            searchBox.addListener('places_changed', function(){
+              searchBoxPlaces(this);
+            });
+
+            //Listen for the event fired when the user selects a prediction and then clicks "go". Then get more details about the place
+            document.getElementById('go-places').addEventListener('click', textSearchPlaces);
+
             //Add event listener so that the polygon is captured, call the searchWithinPolygon function. This will show markers in the polygon, and hide any that fall outside of it. 
 
             drawingManager.addListener('overlaycomplete', function(event) {
