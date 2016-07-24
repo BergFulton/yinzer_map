@@ -244,7 +244,7 @@
                 //If there is one, get rid of it and remove markers
                 if (polygon) {
                     polygon.setMap(null);
-                    hideListings();
+                    hideMarkers();
                 }
                 //Switch the drawing mode to the hand
                 drawingManager.setDrawingMode(null);
@@ -392,7 +392,7 @@
             if (address == '') {
                 window.alert('Yinz gotta give me an address.');
             } else {
-                hideListings();
+                hideMarkers();
                 //Use the distance matrix service to calcuate the duration of the routes between all markers, and the destiation set by the user. The put all the origins into an origin matrix.
                 var origins = [];
                 for (var i = 0; i < markers.length; i++) {
@@ -544,6 +544,16 @@
               position: place.geometry.location,
               id: place.id
             });
+            //Create a single infowindow to be used with the place detail. Allow only 1 to be open at a time.
+            var placeInfoWindow = new google.maps.InfoWindow();
+            //If a marker is clicked, do a place details search on it in the next function.
+            marker.addListener('click', function(){
+              if (placeInfoWindow.marker== this){
+                console.log("This infowindow is already on this marker!")
+              } else {
+                getPlacesDetails(this, placeInfoWindow);
+              }
+            })
             placeMarkers.push(marker);
             if (place.geometry.viewport){
               //Only geocodes have viewports. Apparently.
@@ -553,6 +563,46 @@
             }
           }
           map.fitBounds(bounds);
+        }
+
+        //This is the PLACE DETAILS search. It's only executed if a marker is selected, indicating the user wants more information about the specific place location. 
+
+        function getPlacesDetails (marker, infowindow) {
+          var service = new google.maps.places.PlacesService(map);
+          service.getDetails({
+            placeId: marker.id
+          }, function(place, status){
+            if (status === google.maps.places.PlacesServiceStatus.OK){
+              //Set the marker property on this infowindow so it won't be created again.
+              infowindow.marker = marker;
+              var innerHTML = '<div>';
+              if (place.name){
+                innerHTML += '<strong>' + place.name + '</strong>';
+              } 
+              if (place.formatted_address){
+                innerHTML += '<br>' + place.formatted_address;
+              }
+              if (place.formatted_phone_number){
+                innerHTML += '<br>' + place.formatted_phone_number;
+              }
+              if (place.opening_hours){
+                innerHTML += '<br><br><strong>Hours:</strong><br>' +
+                place.opening_hours.weekday_text[0] + '<br>' +
+                place.opening_hours.weekday_text[1] + '<br>' +
+                place.opening_hours.weekday_text[2] + '<br>' +
+                place.opening_hours.weekday_text[3] + '<br>' +
+                place.opening_hours.weekday_text[4] + '<br>' +
+                place.opening_hours.weekday_text[5] + '<br>' +
+                place.opening_hours.weekday_text[6];
+              }
+              if (place.photos){
+                innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
+                  {maxHeight: 100, maxWidth: 200}) + '">';
+              }
+            }
+          }
+
+          )
         }
     </script>
 
