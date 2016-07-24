@@ -51,6 +51,7 @@
 
     </div>
     <script>
+
         var map;
 
         //Create a blank array for all the listings
@@ -100,7 +101,7 @@
                 }, {
                     hue: '#e85113'
                 }]
-            }]
+            }];
 
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {
@@ -172,7 +173,7 @@
                         google.maps.drawing.OverlayType.POLYGON
                     ]
                 }
-            })
+            });
 
             //Set default marker icon
             var defaultIcon = makeMarkerIcon('0091ff');
@@ -210,7 +211,7 @@
                 });
                 marker.addListener('mouseout', function() {
                     this.setIcon(defaultIcon);
-                })
+                });
             }
 
             //Event listeners for user interactions. 
@@ -253,7 +254,7 @@
                 //Make sure the search is re-done of the polygon changes
                 polygon.getPath().addListener('set_at', searchWithinPolygon);
                 polygon.getPath().addListener('insert_at', searchWithinPolygon);
-            })
+            });
         }
 
         //Populates the info window when Marker is clicked.
