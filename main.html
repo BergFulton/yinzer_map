@@ -59,6 +59,10 @@
         //A global polygon variable, so that only 1 polygon is rendered at a time. Don't go crazy.
         var polygon = null;
 
+        //Create a placemarkers array to use in multiple functions to 
+        //have control over the number of places that show. 
+        var placeMarkers = []; 
+
 
         function initMap() {
             //My map styles, let me show you them
@@ -307,7 +311,7 @@
         }
 
         //This is the function to hide all listings
-        function hideListings() {
+        function hideMarkers(markers) {
             for (var i = 0; i < markers.length; i++) {
                 markers[i].setMap(null);
             }
@@ -487,6 +491,65 @@
                     window.alert('Directions request failed due to ' + status);
                 }
             });
+        }
+
+        //This function fires when the user selects a searchbox picklist
+        //item. It will do a nearby search using the selected query. 
+        function searchBoxPlaces(searchBox){
+          hideMarkers(placeMarkers);
+          var places = searchBox.getPlaces();
+          //For each place, get the icon, name, and location.
+          createMarkersForPlaces(places);
+          if (places.length == 0){
+            window.alert('We did not find any places matching that search.');
+          }
+        }
+
+        //This function fires when the user selects "go" on the places
+        //search. It will do a nearby search using the entered query. 
+        function textSearchPlaces(){
+          var bounds = map.getBounds();
+          hideMarkers(placeMarkers);
+          var placesService = new google.maps.places.PlacesService(map);
+          placesService.textSearch({
+            query: document.getElementById('places-search').value,
+            bounds: bounds
+          }, function(results, status){
+            if (status === google.maps.places.PlacesServiceStatus.OK){
+              createMarkersForPlaces(results);
+            }
+          });
+        }
+
+        //This function creates markers for each place found in either places search.
+        function createMarkersForPlaces(places){
+          var bounds = new google.maps.LatLngBounds();
+          for (var i = 0; i < places.length; i++){
+            var place = places[i];
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(35, 35),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(15, 15),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+            //Create a marker for each place. 
+            var marker = new google.maps.Marker({
+              map: map,
+              icon: icon, 
+              title: place.name,
+              position: place.geometry.location,
+              id: place.id
+            });
+            placeMarkers.push(marker);
+            if (place.geometry.viewport){
+              //Only geocodes have viewports. Apparently.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          }
+          map.fitBounds(bounds);
         }
     </script>
 
