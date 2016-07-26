@@ -270,6 +270,7 @@
                 //Clear the info window when it is closed
 
                 infowindow.addListener('closeclick', function() {
+                    // this throws an error of infowindow.marker is not a function
                     infowindow.setMarker(null);
                 });
 
@@ -306,6 +307,7 @@
         function showListings() {
             var bounds = new google.maps.LatLngBounds();
             //Extend boundaries to fit markers
+            console.log(markers);
             for (var i = 0; i < markers.length; i++) {
                 markers[i].setMap(map);
                 bounds.extend(markers[i].position);
@@ -315,9 +317,9 @@
 
         //This is the function to hide all listings
         function hideMarkers(markers) {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(null);
-            }
+          for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+          }
         }
 
         //Create marker icons for use in the default icon and highlighted icon
@@ -392,7 +394,7 @@
             if (address == '') {
                 window.alert('Yinz gotta give me an address.');
             } else {
-                hideMarkers();
+                hideMarkers(markers);
                 //Use the distance matrix service to calcuate the duration of the routes between all markers, and the destiation set by the user. The put all the origins into an origin matrix.
                 var origins = [];
                 for (var i = 0; i < markers.length; i++) {
@@ -548,8 +550,9 @@
             var placeInfoWindow = new google.maps.InfoWindow();
             //If a marker is clicked, do a place details search on it in the next function.
             marker.addListener('click', function(){
-              if (placeInfoWindow.marker== this){
-                console.log("This infowindow is already on this marker!")
+                console.log("clicked!");
+              if (placeInfoWindow.marker == this){
+                console.log("This infowindow is already on this marker!");
               } else {
                 getPlacesDetails(this, placeInfoWindow);
               }
@@ -599,6 +602,13 @@
                 innerHTML += '<br><br><img src="' + place.photos[0].getUrl(
                   {maxHeight: 100, maxWidth: 200}) + '">';
               }
+              innerHTML += '</div>';
+              infowindow.setContent(innerHTML);
+              infowindow.open(map, marker);
+              //Make sure the marker property is cleared if the infowindow is closed
+              infowindow.addListener('closeclick', function(){
+                infowindow.marker = null;
+              });
             }
           }
 
