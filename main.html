@@ -550,7 +550,9 @@
             var placeInfoWindow = new google.maps.InfoWindow();
             //If a marker is clicked, do a place details search on it in the next function.
             marker.addListener('click', function(){
-                console.log("clicked!");
+                console.log("yep, i'm clicked");
+                console.log(this);
+                console.log(placeInfoWindow);
               if (placeInfoWindow.marker == this){
                 console.log("This infowindow is already on this marker!");
               } else {
@@ -610,9 +612,7 @@
                 infowindow.marker = null;
               });
             }
-          }
-
-          )
+          });
         }
     </script>
 
